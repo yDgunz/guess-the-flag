@@ -16,6 +16,7 @@ const mapOverlay = document.getElementById('map-overlay');
 const mapClose = document.getElementById('map-close');
 const mapCountryName = document.getElementById('map-country-name');
 const mapSvgWrap = document.getElementById('map-svg-wrap');
+const autoMapToggle = document.getElementById('auto-map-toggle');
 
 let state = loadState(window.localStorage);
 let currentRound = null;
@@ -45,6 +46,7 @@ function render() {
   modeButtons.forEach((btn) => {
     btn.classList.toggle('active', btn.dataset.mode === state.mode);
   });
+  autoMapToggle.checked = state.settings.autoShowMap;
 }
 
 function spawnConfetti(count) {
@@ -107,6 +109,8 @@ function loadRound() {
 function handleGuess(btn, country) {
   const correct = country.code === currentRound.target.code;
 
+  const autoOpeningMap = correct && state.settings.autoShowMap;
+
   if (correct) {
     btn.classList.add('correct');
     playCorrect();
@@ -140,7 +144,9 @@ function handleGuess(btn, country) {
     spawnConfetti(60);
   }
 
-  if (correct || justDemoted) {
+  if (autoOpeningMap) {
+    openMap(currentRound.target);
+  } else if (correct || justDemoted) {
     pendingAdvance = setTimeout(() => {
       pendingAdvance = null;
       loadRound();
@@ -159,6 +165,11 @@ mapBtn.addEventListener('click', () => {
 mapClose.addEventListener('click', closeMapAndAdvance);
 mapOverlay.addEventListener('click', (e) => {
   if (e.target === mapOverlay) closeMapAndAdvance();
+});
+
+autoMapToggle.addEventListener('change', () => {
+  state.settings.autoShowMap = autoMapToggle.checked;
+  saveState(window.localStorage, state);
 });
 
 modeButtons.forEach((btn) => {

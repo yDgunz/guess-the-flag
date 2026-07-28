@@ -7,10 +7,15 @@ export const DEFAULT_STATE = {
   progressive: { streak: 0, misses: 0, highestUnlockedIndex: 0 },
   practice: { easy: 0, medium: 0, hard: 0 },
   bestStreaks: { easy: 0, medium: 0, hard: 0, progressive: 0 },
+  settings: { autoShowMap: true },
 };
 
 function numberOr(value, fallback) {
   return typeof value === 'number' ? value : fallback;
+}
+
+function boolOr(value, fallback) {
+  return typeof value === 'boolean' ? value : fallback;
 }
 
 function isOldShape(parsed) {
@@ -27,6 +32,7 @@ function migrateOldShape(parsed) {
     progressive: { streak: parsed.streak, misses: 0, highestUnlockedIndex: parsed.highestUnlockedIndex },
     practice: { ...DEFAULT_STATE.practice },
     bestStreaks: { ...DEFAULT_STATE.bestStreaks, progressive: parsed.streak },
+    settings: { ...DEFAULT_STATE.settings },
   };
 }
 
@@ -48,6 +54,9 @@ function withDefaults(parsed) {
       medium: numberOr(parsed.bestStreaks?.medium, 0),
       hard: numberOr(parsed.bestStreaks?.hard, 0),
       progressive: numberOr(parsed.bestStreaks?.progressive, 0),
+    },
+    settings: {
+      autoShowMap: boolOr(parsed.settings?.autoShowMap, DEFAULT_STATE.settings.autoShowMap),
     },
   };
 }

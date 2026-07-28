@@ -89,6 +89,22 @@ body {
   border-color: var(--gold);
 }
 
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0 1rem 0.75rem;
+  font-size: 0.85rem;
+  opacity: 0.9;
+  cursor: pointer;
+}
+
+.setting-row input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+}
+
 main {
   flex: 1;
   display: flex;

@@ -22,6 +22,7 @@ test('saveState then loadState round-trips the state', () => {
     progressive: { streak: 7, misses: 2, highestUnlockedIndex: 1 },
     practice: { easy: 3, medium: 0, hard: 12 },
     bestStreaks: { easy: 20, medium: 5, hard: 12, progressive: 9 },
+    settings: { autoShowMap: false },
   };
   saveState(storage, state);
   assert.deepEqual(loadState(storage), state);
@@ -40,6 +41,7 @@ test('saving DEFAULT_STATE resets previously saved progress', () => {
     progressive: { streak: 18, misses: 0, highestUnlockedIndex: 2 },
     practice: { easy: 0, medium: 0, hard: 0 },
     bestStreaks: { easy: 0, medium: 0, hard: 0, progressive: 18 },
+    settings: { autoShowMap: false },
   });
   saveState(storage, DEFAULT_STATE);
   assert.deepEqual(loadState(storage), DEFAULT_STATE);
@@ -53,6 +55,7 @@ test('loadState migrates the pre-modes save format without losing progress', () 
     progressive: { streak: 7, misses: 0, highestUnlockedIndex: 1 },
     practice: { easy: 0, medium: 0, hard: 0 },
     bestStreaks: { easy: 0, medium: 0, hard: 0, progressive: 7 },
+    settings: { autoShowMap: true },
   });
 });
 
@@ -64,6 +67,7 @@ test('loadState fills in missing fields from a partial saved shape', () => {
     progressive: { streak: 0, misses: 0, highestUnlockedIndex: 0 },
     practice: { easy: 4, medium: 0, hard: 0 },
     bestStreaks: { easy: 0, medium: 0, hard: 0, progressive: 0 },
+    settings: { autoShowMap: true },
   });
 });
 
@@ -71,4 +75,10 @@ test('loadState rejects an unrecognized mode and falls back to progressive', () 
   const storage = fakeStorage();
   storage.setItem(STORAGE_KEY, JSON.stringify({ mode: 'nonsense' }));
   assert.equal(loadState(storage).mode, 'progressive');
+});
+
+test('loadState preserves a saved autoShowMap: false setting', () => {
+  const storage = fakeStorage();
+  storage.setItem(STORAGE_KEY, JSON.stringify({ settings: { autoShowMap: false } }));
+  assert.equal(loadState(storage).settings.autoShowMap, false);
 });
