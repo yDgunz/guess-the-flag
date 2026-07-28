@@ -1,0 +1,134 @@
+:root {
+  --pitch-green: #1e7d32;
+  --pitch-green-dark: #145a24;
+  --gold: #ffd54a;
+  --white: #ffffff;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,0.08), transparent 60%),
+    repeating-linear-gradient(
+      90deg,
+      var(--pitch-green) 0 80px,
+      var(--pitch-green-dark) 80px 160px
+    );
+  color: var(--white);
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+.hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+}
+
+.tier-badge {
+  background: var(--gold);
+  color: #3a2a00;
+  font-weight: 700;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.streak {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  gap: 1.5rem;
+}
+
+.prompt {
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  text-align: center;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  margin: 0.5rem 0;
+}
+
+.flag-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  width: 100%;
+  max-width: 900px;
+}
+
+.flag-btn {
+  border: 4px solid var(--white);
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--white);
+  padding: 0;
+  aspect-ratio: 4 / 3;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.flag-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.flag-btn:active {
+  transform: scale(0.96);
+}
+
+.flag-btn.correct {
+  box-shadow: 0 0 0 6px var(--gold);
+}
+
+.flag-btn.wrong {
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(6px); }
+}
+
+.confetti-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -10px;
+  width: 10px;
+  height: 10px;
+  opacity: 0.9;
+  animation: fall linear forwards;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110vh) rotate(360deg);
+    opacity: 0.6;
+  }
+}
