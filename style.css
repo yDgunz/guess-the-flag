@@ -31,22 +31,6 @@ body {
   padding: 1rem 1.5rem;
 }
 
-.reset-btn {
-  background: rgba(255, 255, 255, 0.15);
-  color: var(--white);
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  font-weight: 700;
-  font-size: 0.9rem;
-  padding: 0.5rem 0.9rem;
-  min-height: 44px;
-  border-radius: 999px;
-  cursor: pointer;
-}
-
-.reset-btn:active {
-  background: rgba(255, 255, 255, 0.3);
-}
-
 .tier-badge {
   background: var(--gold);
   color: #3a2a00;
@@ -57,9 +41,50 @@ body {
   letter-spacing: 0.05em;
 }
 
-.streak {
+.streak-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.streak,
+.best-streak {
   font-size: 1.3rem;
   font-weight: 700;
+}
+
+.best-streak {
+  opacity: 0.85;
+}
+
+.mode-bar {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0 1rem 0.5rem;
+  flex-wrap: wrap;
+}
+
+.mode-btn {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--white);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.5rem 0.9rem;
+  min-height: 44px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.mode-btn:active {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.mode-btn.active {
+  background: var(--gold);
+  color: #3a2a00;
+  border-color: var(--gold);
 }
 
 main {

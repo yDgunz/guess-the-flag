@@ -1,25 +1,35 @@
 import { COUNTRIES } from '../data/countries.js';
-import { TIER_ORDER, pickRound, recordAnswer } from './game.js';
-import { loadState, saveState, DEFAULT_STATE } from './storage.js';
+import { TIER_ORDER, roundParamsForMode, pickRound, recordAnswer, nextStreak, updateBest } from './game.js';
+import { loadState, saveState } from './storage.js';
 import { playCorrect, playWrong, playUnlock, speak } from './audio.js';
 
 const tierBadge = document.getElementById('tier-badge');
 const streakDisplay = document.getElementById('streak-display');
+const bestStreakDisplay = document.getElementById('best-streak-display');
 const promptEl = document.getElementById('prompt');
 const grid = document.getElementById('flag-grid');
 const confettiLayer = document.getElementById('confetti-layer');
-const resetBtn = document.getElementById('reset-btn');
+const modeButtons = document.querySelectorAll('.mode-btn');
 
 let state = loadState(window.localStorage);
 let currentRound = null;
 
-function tierLabel(index) {
-  return TIER_ORDER[index].charAt(0).toUpperCase() + TIER_ORDER[index].slice(1);
+function currentStreak() {
+  return state.mode === 'progressive' ? state.progressive.streak : state.practice[state.mode];
+}
+
+function tierBadgeLabel() {
+  const tierName = state.mode === 'progressive' ? TIER_ORDER[state.progressive.highestUnlockedIndex] : state.mode;
+  return tierName.charAt(0).toUpperCase() + tierName.slice(1);
 }
 
 function render() {
-  tierBadge.textContent = tierLabel(state.highestUnlockedIndex);
-  streakDisplay.textContent = `🔥 ${state.streak}`;
+  tierBadge.textContent = tierBadgeLabel();
+  streakDisplay.textContent = `🔥 ${currentStreak()}`;
+  bestStreakDisplay.textContent = `🏆 ${state.bestStreaks[state.mode]}`;
+  modeButtons.forEach((btn) => {
+    btn.classList.toggle('active', btn.dataset.mode === state.mode);
+  });
 }
 
 function spawnConfetti(count) {
@@ -36,7 +46,8 @@ function spawnConfetti(count) {
 }
 
 function loadRound() {
-  currentRound = pickRound(COUNTRIES, state.highestUnlockedIndex);
+  const { tiers, optionCount } = roundParamsForMode(state.mode, state.progressive.highestUnlockedIndex);
+  currentRound = pickRound(COUNTRIES, tiers, optionCount);
   promptEl.textContent = currentRound.target.name;
   speak(currentRound.target.name);
 
@@ -67,27 +78,41 @@ function handleGuess(btn, country) {
     setTimeout(() => btn.classList.remove('wrong'), 400);
   }
 
-  const result = recordAnswer(state, correct);
-  state = { streak: result.streak, highestUnlockedIndex: result.highestUnlockedIndex };
+  let justUnlocked = false;
+  let justDemoted = false;
+  let streak;
+  if (state.mode === 'progressive') {
+    const result = recordAnswer(state.progressive, correct);
+    state.progressive = { streak: result.streak, misses: result.misses, highestUnlockedIndex: result.highestUnlockedIndex };
+    justUnlocked = result.justUnlocked;
+    justDemoted = result.justDemoted;
+    streak = result.streak;
+  } else {
+    streak = nextStreak(state.practice[state.mode], correct);
+    state.practice[state.mode] = streak;
+  }
+  state.bestStreaks[state.mode] = updateBest(state.bestStreaks[state.mode], streak);
   saveState(window.localStorage, state);
   render();
 
-  if (result.justUnlocked) {
+  if (justUnlocked) {
     playUnlock();
     spawnConfetti(60);
   }
 
-  if (correct) {
+  if (correct || justDemoted) {
     setTimeout(loadRound, 900);
   }
 }
 
-resetBtn.addEventListener('click', () => {
-  if (!window.confirm('Restart from Easy? This clears the current streak and unlocked tiers.')) return;
-  state = { ...DEFAULT_STATE };
-  saveState(window.localStorage, state);
-  render();
-  loadRound();
+modeButtons.forEach((btn) => {
+  btn.addEventListener('click', () => {
+    if (btn.dataset.mode === state.mode) return;
+    state.mode = btn.dataset.mode;
+    saveState(window.localStorage, state);
+    render();
+    loadRound();
+  });
 });
 
 render();
