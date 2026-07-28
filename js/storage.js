@@ -1,6 +1,6 @@
 export const STORAGE_KEY = 'guess-the-flag:progress';
 
-const DEFAULT_STATE = { streak: 0, highestUnlockedIndex: 0 };
+export const DEFAULT_STATE = { streak: 0, highestUnlockedIndex: 0 };
 
 export function loadState(storage) {
   const raw = storage.getItem(STORAGE_KEY);

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { loadState, saveState, STORAGE_KEY } from '../js/storage.js';
+import { loadState, saveState, STORAGE_KEY, DEFAULT_STATE } from '../js/storage.js';
 
 function fakeStorage() {
   const map = new Map();
@@ -24,5 +24,12 @@ test('saveState then loadState round-trips the state', () => {
 test('loadState falls back to default on corrupt data', () => {
   const storage = fakeStorage();
   storage.setItem(STORAGE_KEY, 'not json');
+  assert.deepEqual(loadState(storage), { streak: 0, highestUnlockedIndex: 0 });
+});
+
+test('saving DEFAULT_STATE resets previously saved progress', () => {
+  const storage = fakeStorage();
+  saveState(storage, { streak: 18, highestUnlockedIndex: 2 });
+  saveState(storage, DEFAULT_STATE);
   assert.deepEqual(loadState(storage), { streak: 0, highestUnlockedIndex: 0 });
 });

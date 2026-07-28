@@ -1,6 +1,6 @@
 export const TIER_ORDER = ['easy', 'medium', 'hard'];
-export const STREAK_TO_UNLOCK = 10;
-export const OPTION_COUNTS = { easy: 4, medium: 6, hard: 8 };
+export const OPTION_COUNTS = { easy: 4, medium: 6, hard: 6 };
+export const UNLOCK_THRESHOLDS = { easy: 15, medium: 20 };
 
 export function unlockedTiers(highestUnlockedIndex) {
   return TIER_ORDER.slice(0, highestUnlockedIndex + 1);
@@ -37,7 +37,11 @@ export function recordAnswer(state, correct) {
     return { streak: 0, highestUnlockedIndex: state.highestUnlockedIndex, justUnlocked: false };
   }
   const streak = state.streak + 1;
-  const canUnlock = streak >= STREAK_TO_UNLOCK && state.highestUnlockedIndex < TIER_ORDER.length - 1;
+  const currentTier = TIER_ORDER[state.highestUnlockedIndex];
+  const threshold = UNLOCK_THRESHOLDS[currentTier];
+  const canUnlock = threshold !== undefined
+    && streak >= threshold
+    && state.highestUnlockedIndex < TIER_ORDER.length - 1;
   const highestUnlockedIndex = canUnlock ? state.highestUnlockedIndex + 1 : state.highestUnlockedIndex;
   return { streak, highestUnlockedIndex, justUnlocked: canUnlock };
 }

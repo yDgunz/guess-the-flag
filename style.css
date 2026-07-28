@@ -31,6 +31,22 @@ body {
   padding: 1rem 1.5rem;
 }
 
+.reset-btn {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--white);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.5rem 0.9rem;
+  min-height: 44px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.reset-btn:active {
+  background: rgba(255, 255, 255, 0.3);
+}
+
 .tier-badge {
   background: var(--gold);
   color: #3a2a00;

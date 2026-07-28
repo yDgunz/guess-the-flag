@@ -1,6 +1,6 @@
 import { COUNTRIES } from '../data/countries.js';
 import { TIER_ORDER, pickRound, recordAnswer } from './game.js';
-import { loadState, saveState } from './storage.js';
+import { loadState, saveState, DEFAULT_STATE } from './storage.js';
 import { playCorrect, playWrong, playUnlock, speak } from './audio.js';
 
 const tierBadge = document.getElementById('tier-badge');
@@ -8,6 +8,7 @@ const streakDisplay = document.getElementById('streak-display');
 const promptEl = document.getElementById('prompt');
 const grid = document.getElementById('flag-grid');
 const confettiLayer = document.getElementById('confetti-layer');
+const resetBtn = document.getElementById('reset-btn');
 
 let state = loadState(window.localStorage);
 let currentRound = null;
@@ -80,6 +81,14 @@ function handleGuess(btn, country) {
     setTimeout(loadRound, 900);
   }
 }
+
+resetBtn.addEventListener('click', () => {
+  if (!window.confirm('Restart from Easy? This clears the current streak and unlocked tiers.')) return;
+  state = { ...DEFAULT_STATE };
+  saveState(window.localStorage, state);
+  render();
+  loadRound();
+});
 
 render();
 loadRound();

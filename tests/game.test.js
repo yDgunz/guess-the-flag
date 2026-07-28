@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  TIER_ORDER, STREAK_TO_UNLOCK, OPTION_COUNTS,
+  TIER_ORDER, UNLOCK_THRESHOLDS, OPTION_COUNTS,
   unlockedTiers, poolForTiers, pickRound, recordAnswer,
 } from '../js/game.js';
 
@@ -14,6 +14,12 @@ const SAMPLE = [
   { code: 'cn', name: 'China', tier: 'medium' },
   { code: 'al', name: 'Albania', tier: 'hard' },
 ];
+
+test('OPTION_COUNTS caps every tier at 6 flags for small-screen fit', () => {
+  assert.equal(OPTION_COUNTS.easy, 4);
+  assert.equal(OPTION_COUNTS.medium, 6);
+  assert.equal(OPTION_COUNTS.hard, 6);
+});
 
 test('unlockedTiers returns cumulative tier list by index', () => {
   assert.deepEqual(unlockedTiers(0), ['easy']);
@@ -61,16 +67,26 @@ test('recordAnswer increments streak on correct, resets on incorrect', () => {
   assert.equal(next.justUnlocked, false);
 });
 
-test('recordAnswer unlocks next tier at STREAK_TO_UNLOCK correct in a row', () => {
-  const state = { streak: STREAK_TO_UNLOCK - 1, highestUnlockedIndex: 0 };
+test('recordAnswer unlocks medium at the easy-tier threshold', () => {
+  const threshold = UNLOCK_THRESHOLDS.easy;
+  const state = { streak: threshold - 1, highestUnlockedIndex: 0 };
   const next = recordAnswer(state, true);
-  assert.equal(next.streak, STREAK_TO_UNLOCK);
+  assert.equal(next.streak, threshold);
   assert.equal(next.highestUnlockedIndex, 1);
   assert.equal(next.justUnlocked, true);
 });
 
+test('recordAnswer unlocks hard at the medium-tier threshold', () => {
+  const threshold = UNLOCK_THRESHOLDS.medium;
+  const state = { streak: threshold - 1, highestUnlockedIndex: 1 };
+  const next = recordAnswer(state, true);
+  assert.equal(next.streak, threshold);
+  assert.equal(next.highestUnlockedIndex, 2);
+  assert.equal(next.justUnlocked, true);
+});
+
 test('recordAnswer does not unlock past the last tier', () => {
-  const state = { streak: STREAK_TO_UNLOCK - 1, highestUnlockedIndex: TIER_ORDER.length - 1 };
+  const state = { streak: 1000, highestUnlockedIndex: TIER_ORDER.length - 1 };
   const next = recordAnswer(state, true);
   assert.equal(next.highestUnlockedIndex, TIER_ORDER.length - 1);
   assert.equal(next.justUnlocked, false);
