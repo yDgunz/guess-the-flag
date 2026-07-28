@@ -25,9 +25,19 @@
   <main>
     <h1 class="prompt" id="prompt">Loading…</h1>
     <div class="flag-grid" id="flag-grid"></div>
+    <button class="map-btn hidden" id="map-btn">🌍 Where is this?</button>
   </main>
 
   <div class="confetti-layer" id="confetti-layer"></div>
+
+  <div class="map-overlay hidden" id="map-overlay">
+    <div class="map-panel">
+      <button class="map-close" id="map-close" aria-label="Close map">✕</button>
+      <h2 id="map-country-name"></h2>
+      <div class="map-svg-wrap" id="map-svg-wrap"></div>
+      <p class="map-credit">Map: <a href="https://github.com/VictorCazanave/svg-maps" target="_blank" rel="noopener">svg-maps</a> (CC BY 4.0)</p>
+    </div>
+  </div>
 
   <script type="module" src="js/main.js"></script>
 </body>

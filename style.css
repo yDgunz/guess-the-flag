@@ -7,6 +7,8 @@
 
 * { box-sizing: border-box; }
 
+.hidden { display: none !important; }
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -173,4 +175,95 @@ main {
     transform: translateY(110vh) rotate(360deg);
     opacity: 0.6;
   }
+}
+
+.map-btn {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--white);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.6rem 1.1rem;
+  min-height: 44px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.map-btn:active {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.map-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 20;
+}
+
+.map-panel {
+  background: #0d3d1a;
+  border-radius: 20px;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 520px;
+  position: relative;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.map-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--white);
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+#map-country-name {
+  margin: 0 0 1rem;
+  font-size: 1.6rem;
+}
+
+.map-svg-wrap {
+  background: #cdeaff;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.map-svg-wrap svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.map-svg-wrap svg path {
+  fill: #7fb37f;
+  stroke: #0d3d1a;
+  stroke-width: 0.5;
+}
+
+.map-svg-wrap svg path.map-highlight {
+  fill: var(--gold);
+  stroke: #a85b00;
+  stroke-width: 1;
+}
+
+.map-credit {
+  margin: 0.75rem 0 0;
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.map-credit a {
+  color: inherit;
 }
