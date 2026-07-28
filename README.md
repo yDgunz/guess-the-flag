@@ -10,7 +10,7 @@ Then open http://localhost:8000
 
 ## Run tests
 
-    node --test tests/
+    node --test
 
 ## Deploy
 
